@@ -4,43 +4,69 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    background-image: url("heart-bg.jpg");
+    color: #5c3a58;
+    background-image: url(".vscode/heartbg.png");
+    background-size: cover;
+    background-position: center;
     font-family: "Pixelify Sans", sans-serif;
+    /* overflow: hidden; Removed to let photos pop out */
+}
+
+/* Stitched border effect */
+.letter-window::before {
+    content: "";
+    position: absolute;
+    inset: 12px;
+    border: 3px dashed #ffb6c1;
+    border-radius: 12px;
+    pointer-events: none;
+    z-index: 0;
+}
+
+body::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle, transparent 20%, rgba(255, 192, 203, 0.4) 100%);
+    pointer-events: none;
+    z-index: -1;
 }
 
 /* Envelope Screen */
 #envelope-container {
     text-align: center;
-    cursor:pointer;
+    cursor: pointer;
 }
 
 @keyframes pulse {
     0% {
-        transform:scale(1);
+        transform: scale(1);
     }
+
     50% {
-        transform: scale(1.1);
+        transform: scale(1.2);
     }
+
     100% {
         transform: scale(1);
     }
 }
 
-#envelope{
+#envelope {
     width: 200px;
     animation: pulse 1.5s infinite;
     cursor: pointer;
 }
 
-#letter-container{
+#letter-container {
     display: none;
-    position:fixed;
+    position: fixed;
     inset: 0;
     justify-content: center;
     align-items: center;
 }
 
-.letter-window{
+.letter-window {
     width: 90vw;
     max-width: 800px;
     aspect-ratio: 3/2;
@@ -50,13 +76,38 @@ body {
     justify-content: center;
     align-items: center;
     text-align: center;
-    background-image: url("window.png");
-    background-size: contain;
+    background-color: #fff0f5;
+    background-image: repeating-linear-gradient(45deg,
+            rgba(255, 255, 255, 0.5),
+            rgba(255, 255, 255, 0.5) 10px,
+            rgba(255, 228, 235, 0.5) 10px,
+            rgba(255, 228, 235, 0.5) 20px);
+    /* Soft diagonal texture */
+    background-size: cover;
     background-repeat: no-repeat;
     background-position: center;
-    border-radius: 12px;
-    gap: 1px;
-    padding-top: 180px;
+    border-radius: 20px;
+    /* Slightly rounded */
+    box-shadow:
+        0 8px 0 #ffb6c1,
+        /* 3D bottom edge */
+        0 20px 40px rgba(0, 0, 0, 0.2);
+    /* Deep drop shadow */
+    gap: 15px;
+    /* Increased gap */
+    padding: 60px 20px 40px 20px;
+    /* Adjusted padding */
+    border: 4px solid #ff69b4;
+    /* Hot pink framing border */
+    position: relative;
+    overflow: hidden;
+    /* Clean edges */
+
+    /* Allow height to grow for new content */
+    height: auto;
+    min-height: 500px;
+    position: relative;
+
 
     transform: scale(1.2);
     opacity: 0;
@@ -69,12 +120,21 @@ body {
 }
 
 h1 {
-    font-size: 30px;
-    margin:0;
+    font-size: 36px;
+    /* Larger title */
+    margin: 0;
+    color: #ff3366;
+    text-shadow: 2px 2px 0px #fff;
+    order: 1;
+    /* Keep title at top */
 }
 
 p {
-    font-size: 40px;
+    font-size: 28px;
+    /* Adjusted for better fit */
+    color: #d63384;
+    text-shadow: 1px 1px 0px #fff;
+    margin-top: 10px;
 }
 
 /* Cat */
@@ -83,10 +143,17 @@ p {
     width: 250px;
     margin: 10px 0;
     transition: width 0.4s ease;
+    order: 0;
+    /* Default order */
 }
 
+/* When final state, move cat to bottom */
 .letter-window.final .cat {
-    width: 180px;
+    width: 150px;
+    order: 3;
+    /* Move to bottom */
+    margin-top: -10px;
+    /* Move upper closer to text */
 }
 
 /* buttons */
@@ -97,8 +164,8 @@ p {
     position: relative;
 }
 
-.no-wrapper{
-    position:relative;
+.no-wrapper {
+    position: relative;
 }
 
 .btn {
@@ -109,9 +176,9 @@ p {
 
 .yes-btn,
 .no-btn {
-width: 120px;
-height: auto;
-display: inline-block;
+    width: 120px;
+    height: auto;
+    display: inline-block;
 }
 
 .yes-btn {
@@ -128,12 +195,154 @@ display: inline-block;
     cursor: default;
 }
 
-.final-text{
-    font-size: 22px;
-    line-height: 1.4;
-    text-align: center;
-    display: inline-block;
-    padding: 10px 20px;
-    background-color: rgba(255,240,240,0.5);
-    border-radius: 12px;
+/* Final Content Area */
+.final-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    animation: popIn 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    width: 100%;
+    order: 2;
+    /* Content in middle */
+    margin-bottom: 10px;
+}
+
+.photos-container {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    /* More space between photos */
+    flex-wrap: wrap;
+    z-index: 2;
+    /* Above paper note */
+    position: relative;
+    width: 100%;
+}
+
+.photo-frame {
+    background: white;
+    padding: 12px 12px 40px 12px;
+    /* Bigger polaroid bottom */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+    transform: rotate(-4deg);
+    margin-top: 20px;
+    /* Use margin instead of translate */
+    transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.3s ease;
+    width: 160px;
+    z-index: 2;
+    /* Base z-index */
+}
+
+.photo-frame:nth-child(2) {
+    transform: rotate(4deg);
+    margin-top: 10px;
+    z-index: 1;
+}
+
+.photo-frame:hover {
+    transform: scale(1.15) rotate(0deg);
+    /* Bigger pop */
+    z-index: 10;
+    /* Ensure it's on top of EVERYTHING */
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+    /* Stronger shadow */
+    cursor: pointer;
+}
+
+.placeholder-img {
+    width: 100%;
+    height: 120px;
+    background-color: #eee;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #aaa;
+    font-size: 14px;
+    border: 1px dashed #ccc;
+}
+
+/* If user puts real images later */
+.mem-photo {
+    width: 100%;
+    height: auto;
+    display: block;
+}
+
+.caption {
+    display: block;
+    margin-top: 10px;
+    font-family: "Dancing Script", cursive;
+    font-size: 20px;
+    color: #444;
+}
+
+.paper-note {
+    background: #ce70f0e0;
+    padding: 30px 25px;
+    width: 90%;
+    max-width: 500px;
+    /* Bigger note */
+    box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+    font-family: "Dancing Script", cursive;
+    color: #4a4a4a;
+    font-size: 26px;
+    /* Bigger font */
+    line-height: 1.6;
+    transform: rotate(1deg);
+    position: relative;
+    border: 1px solid #e6e6e6;
+    margin-top: -40px;
+    z-index: 0;
+    /* Behind photos */
+}
+
+.paper-note::after {
+    content: "";
+    /* Tape effect */
+    position: absolute;
+    top: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80px;
+    height: 25px;
+    background: rgba(255, 255, 255, 0.6);
+    border: 1px solid rgba(0, 0, 0, 0.05);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.signature {
+    text-align: right;
+    margin-top: 10px;
+    font-weight: bold;
+    color: #ff3366;
+}
+
+.final-text {
+    /* Keeping this just in case, or for legacy cleanup, but redefined above as part of structure */
+    display: none;
+}
+
+@keyframes popIn {
+    0% {
+        transform: scale(0.5);
+        opacity: 0;
+    }
+
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+@keyframes fall {
+    0% {
+        transform: translateY(0) rotate(0deg);
+        opacity: 1;
+    }
+
+    100% {
+        transform: translateY(100vh) rotate(360deg);
+        opacity: 0;
+    }
 }

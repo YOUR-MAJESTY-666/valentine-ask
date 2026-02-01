@@ -15,58 +15,67 @@ envelope.addEventListener("click", () => {
     envelope.style.display = "none";
     letter.style.display = "flex";
 
-    setTimeout( () => {
+    setTimeout(() => {
         document.querySelector(".letter-window").classList.add("open");
-    },50);
+    }, 50);
 });
 
 // Logic to move the NO btn
-
 noBtn.addEventListener("mouseover", () => {
-    const min = 200;
-    const max = 200;
+    // Randomize movement range more dynamically
+    const min = 50;
+    const max = 300;
 
-    const distance = Math.random() * (max - min) + min;
-    const angle = Math.random() * Math.PI * 2;
+    const moveX = (Math.random() - 0.5) * (max - min) * 2; // Move in both directions
+    const moveY = (Math.random() - 0.5) * (max - min) * 2;
 
-    const moveX = Math.cos(angle) * distance;
-    const moveY = Math.sin(angle) * distance;
-
-    noBtn.style.transition = "transform 0.3s ease";
+    noBtn.style.transition = "transform 0.2s ease";
     noBtn.style.transform = `translate(${moveX}px, ${moveY}px)`;
+
+    // Make YES grow when you try to hit NO
+    growYesButton();
 });
 
 // Logic to make YES btn to grow
+let yesScale = 1;
 
-// let yesScale = 1;
-
-// yesBtn.style.position = "relative"
-// yesBtn.style.transformOrigin = "center center";
-// yesBtn.style.transition = "transform 0.3s ease";
-
-// noBtn.addEventListener("click", () => {
-//     yesScale += 2;
-
-//     if (yesBtn.style.position !== "fixed") {
-//         yesBtn.style.position = "fixed";
-//         yesBtn.style.top = "50%";
-//         yesBtn.style.left = "50%";
-//         yesBtn.style.transform = `translate(-50%, -50%) scale(${yesScale})`;
-//     }else{
-//         yesBtn.style.transform = `translate(-50%, -50%) scale(${yesScale})`;
-//     }
-// });
+function growYesButton() {
+    yesScale += 0.2; // Increment scale
+    yesBtn.style.transition = "transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275)";
+    yesBtn.style.transform = `scale(${yesScale})`;
+}
 
 // YES is clicked
-
 yesBtn.addEventListener("click", () => {
-    title.textContent = "Yippeeee!";
+    title.textContent = "Yippeeee! 🎉";
 
+    // Change image to cute dance
     catImg.src = "cat_dance.gif";
 
     document.querySelector(".letter-window").classList.add("final");
 
-    buttons.style.display = "none";
+    // Hide buttons smoothly
+    buttons.style.opacity = "0";
+    setTimeout(() => { buttons.style.display = "none"; }, 300);
 
-    finalText.style.display = "block";
+    finalText.style.display = "flex";
+
+    // Trigger confetti (simulated with emojis for simplicity without external lib)
+    createConfetti();
 });
+
+function createConfetti() {
+    for (let i = 0; i < 50; i++) {
+        const confetti = document.createElement("div");
+        confetti.innerText = ["❤️", "✨", "🌸", "🧸", "🎀"][Math.floor(Math.random() * 5)];
+        confetti.style.position = "fixed";
+        confetti.style.left = Math.random() * 100 + "vw";
+        confetti.style.top = "-5vh";
+        confetti.style.fontSize = Math.random() * 20 + 20 + "px";
+        confetti.style.animation = `fall ${Math.random() * 2 + 2}s linear forwards`;
+        document.body.appendChild(confetti);
+
+        // Remove after animation
+        setTimeout(() => confetti.remove(), 4000);
+    }
+}
